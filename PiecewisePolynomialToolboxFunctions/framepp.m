@@ -47,7 +47,7 @@ x = breaks;
 
 % Position - q(1:3,:)
 q = ppval(pp,x);
-[m,n] = size(q)
+[m,n] = size(q);
 
 % Orientation
 x_hat = ppval(T_hat,x);
@@ -64,6 +64,17 @@ for i = 1:numel(x)
         out = dot(k_all(:,i-1),k);
     else
         out = 1;
+    end
+    
+    % Check for theta with imaginary part
+    % TODO - confirm that taking the real part of this complex number is 
+    %   appropriate 
+    % TODO - investigate how SOtoAxisAngle can result in an imaginary
+    %   number. Note the input rotation is likely not in SO(3).
+    if ~isreal(theta)
+        warning(...
+            sprintf('Calculated theta resulting from "[k,theta] = SOtoAxisAngle(R)" has an imaginary part %fi\n',imag(theta)));
+        theta = real(theta);
     end
     
     if out > 0
