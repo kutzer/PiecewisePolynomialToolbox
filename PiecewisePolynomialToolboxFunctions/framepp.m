@@ -59,6 +59,9 @@ for i = 1:numel(x)
     z_hat(:,i) = cross(x_hat(:,i),y_hat(:,i));
     R = [x_hat(:,i),y_hat(:,i),z_hat(:,i)];
     
+    %fprintf(
+    fprintf('det(R) = %.2f\n',det(R));
+    
     [k,theta] = SOtoAxisAngle(R);
     if i > 1
         out = dot(k_all(:,i-1),k);
@@ -73,7 +76,7 @@ for i = 1:numel(x)
     %   number. Note the input rotation is likely not in SO(3).
     if ~isreal(theta)
         warning(...
-            sprintf('Calculated theta resulting from "[k,theta] = SOtoAxisAngle(R)" has an imaginary part %fi\n',imag(theta)));
+            sprintf('Calculated theta resulting from "[k,theta] = SOtoAxisAngle(R)" has an imaginary part %f + %fi\n',real(theta),imag(theta)));
         theta = real(theta);
     end
     
