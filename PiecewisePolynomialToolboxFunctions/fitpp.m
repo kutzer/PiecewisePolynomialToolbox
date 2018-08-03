@@ -116,8 +116,13 @@ for i = 1:2:numel(varargin)
 end
 
 %% Fit initial set of polynomials
+
+% Initialize coefficients array 
 coefs = [];
-showSTATUS = false;
+% Initialize status flags
+showWAITBAR = false;
+showTIME = false;
+
 nX = numel(x);
 for i = 2:nX
     if i == 2
@@ -203,27 +208,37 @@ for i = 2:nX
         tDAYS    = tHOURS/24;
         
         if tSECONDS > 10
-            showSTATUS = true;
+            showWAITBAR = true;
             hSTATUS = waitbar(0,'Fitting piecewise polynomial...');
         end
         
         if tMINUTES > 5
-            fprintf(' -> Status update for "%s.m"\n',mfilename);
-            fprintf('\t                Current time: %s\n',datestr(now));
-            fprintf('\tEstimated time to completion: %s\n',datestr(now + tDAYS));
+            showTIME = true;
+            fprintf('Status update for "%s.m"\n',mfilename);
+            fprintf('               Current time: %s\n',datestr(now));
+            fprintf('  Estimated completion time: %s\n',datestr(now + tDAYS));
         end
     end
     
-    if showSTATUS
+    if showWAITBAR
         % Status update
+        if ~ishandle(hSTATUS)
+            pp = [];
+            warning('Fitting cancelled by user.');
+            return
+        end
+        
         waitbar(i/nX,hSTATUS);
     end
     % ---------------------------------------------------------------------
 end
 
 % --- Show fit status for long duration fits ------------------------------
-if showSTATUS
+if showWAITBAR
     delete(hSTATUS);
+end
+if showTIME
+    fprintf('     Actual completion time: %s\n',datestr(now));
 end
 % -------------------------------------------------------------------------
 
