@@ -43,6 +43,11 @@ function pp = fitpp(x,y,varargin)
 %
 %   M. Kutzer, 17Nov2017, USNA
 
+% Updates
+%   02Feb2018 - Updated to correct for evolution of curve from 0 to arc
+%               length
+%   03Aug2018 - Updated to provide status updates for long processing
+
 % TODO - Implement continuity constraints. 
 
 %% Check inputs
@@ -203,8 +208,9 @@ for i = 2:nX
         end
         
         if tMINUTES > 5
-            fprintf('                Current time: %s\n',datestr(now));
-            fprintf('Estimated time to completion: %s\n',datestr(now + tDAYS));
+            fprintf(' -> Status update for "%s.m"\n',mfilename);
+            fprintf('\t                Current time: %s\n',datestr(now));
+            fprintf('\tEstimated time to completion: %s\n',datestr(now + tDAYS));
         end
     end
     
