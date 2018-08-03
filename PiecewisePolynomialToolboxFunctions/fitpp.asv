@@ -199,12 +199,16 @@ for i = 2:nX
         
         if tSECONDS > 10
             showSTATUS = true;
-            hSTATUS = waitbar(0,'Fitting piecewise polynomial...');
         end
         
-        if tMINUTES > 5
+        if showSTATUS
+            hSTATUS = waitbar(0,'Fitting piecewise polynomial...');
             fprintf('                Current time: %s\n',datestr(now));
             fprintf('Estimated time to completion: %s\n',datestr(now + tDAYS));
+            fprintf('\n');
+            fprintf('\t');
+            fprintf('%d days,',floor(tDays));
+            fprintf('%d hours,',floor(tHours - flo
         end
     end
     
@@ -220,7 +224,6 @@ if showSTATUS
     delete(hSTATUS);
 end
 % -------------------------------------------------------------------------
-
 %% Apply CN constraint
 % TODO - apply CN constraint
 
