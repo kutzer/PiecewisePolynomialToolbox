@@ -209,10 +209,10 @@ for i = 2:nX
         
         if tSECONDS > 10
             showWAITBAR = true;
-            hSTATUS = waitbar(0,'Fitting piecewise polynomial...');
+            hWAITBAR = waitbar(0,'Fitting piecewise polynomial...');
         end
         
-        if tMINUTES > 5
+        if tMINUTES > 0
             showTIME = true;
             fprintf('Status update for "%s.m"\n',mfilename);
             fprintf('               Current time: %s\n',datestr(now));
@@ -220,24 +220,34 @@ for i = 2:nX
         end
     end
     
+    if showTIME
+        if mod((i-1),4) == 0
+            fprintf(char([8,8,8]));
+        else
+            fprintf('.');
+        end
+    end
+    
     if showWAITBAR
         % Status update
-        if ~ishandle(hSTATUS)
+        if ~ishandle(hWAITBAR)
             pp = [];
+            fprintf( char(repmat(8,1,mod((i-1),4))) );
             warning('Fitting cancelled by user.');
             return
         end
         
-        waitbar(i/nX,hSTATUS);
+        waitbar(i/nX,hWAITBAR);
     end
     % ---------------------------------------------------------------------
 end
 
 % --- Show fit status for long duration fits ------------------------------
 if showWAITBAR
-    delete(hSTATUS);
+    delete(hWAITBAR);
 end
 if showTIME
+    fprintf( char(repmat(8,1,mod((i-1),4))) );
     fprintf('     Actual completion time: %s\n',datestr(now));
 end
 % -------------------------------------------------------------------------

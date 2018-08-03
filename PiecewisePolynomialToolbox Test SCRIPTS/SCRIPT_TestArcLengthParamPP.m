@@ -69,7 +69,6 @@ for i = 1:m
     legend(axs(1,i),'Original','Arc Length Parametrized');
 end
 
-
 % -> Check tangent
 ppTs = diffpp(pps);
 Ts = ppval(ppTs,ss);
