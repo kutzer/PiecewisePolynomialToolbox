@@ -112,7 +112,9 @@ end
 
 %% Fit initial set of polynomials
 coefs = [];
-for i = 2:numel(x)
+hSTATUS = waitbar(0,'Fitting piecewise polynomial...');
+nX = numel(x);
+for i = 2:nX
     % Find all user provided constraints
     bin = dx >= x(i-1) & dx <= x(i);
     const_x = [x((i-1):i),dx(bin)] - x(i-1); % "localize" x-values
@@ -183,7 +185,10 @@ for i = 2:numel(x)
         % Same number of coefficients 
         coefs = [coefs; coef];
     end
+    
+    waitbar(i/nX,hSTATUS);
 end
+delete(hSTATUS);
 
 %% Apply CN constraint
 % TODO - apply CN constraint
