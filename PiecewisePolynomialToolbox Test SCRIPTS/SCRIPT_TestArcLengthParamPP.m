@@ -23,8 +23,12 @@ ppT = diffpp(pp);
 T = ppval(ppT,xx);
 normT = sqrt( sum(T.^2,1) );
 
-figure;
-plot(xx,normT,'.b');
+figNormTx = figure('Name','|T(x)|');
+axsNormTx = axes('Parent',figNormTx);
+hold(axsNormTx,'on');
+xlabel(axsNormTx,'x');
+ylabel(axsNormTx,'|T(x)|');
+plot(axsNormTx,xx,normT,'.b');
 
 % -> Create 2D figure
 fig2D(1) = figure;
@@ -56,17 +60,24 @@ YYs = ppval(pps,ss);
 
 % -> Plot 2D fit
 plt2D(1) = plot(axs2D(1),YYs(1,:),YYs(2,:),'r');
+legend(axs2D(1),'Original','Arc Length Parametrized');
 
 % -> Plot fit evolving as a function of s
 for i = 1:m
     % -> Plot "time" evolving variable
     plt(i) = plot(axs(1,i),ss,YYs(i,:),'r');
+    legend(axs(1,i),'Original','Arc Length Parametrized');
 end
+
 
 % -> Check tangent
 ppTs = diffpp(pps);
 Ts = ppval(ppTs,ss);
 normTs = sqrt( sum(Ts.^2,1) );
 
-figure;
+figNormTs = figure('Name','|T(s)|');
+axsNormTs = axes('Parent',figNormTs);
+hold(axsNormTs,'on');
+xlabel(axsNormTs,'s');
+ylabel(axsNormTs,'|T(s)|');
 plot(ss,normTs,'.r');

@@ -41,7 +41,7 @@ ppT = diffpp(pp);
 n = numel(breaks);
 newBreaks = zeros(1,N*(n-1)+1);
 for i = 2:numel(breaks)
-    % Define N break points
+    % Define N intermediate break points
     tmpBreaks = linspace(breaks(i-1),breaks(i),N+1);
     tmpBreaks(end) = [];
     % Combine to new break points
