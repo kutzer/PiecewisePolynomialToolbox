@@ -11,9 +11,9 @@ function tf = ispp(pp)
 narginchk(1,1);
 
 %% Define field names 
+tf = false;
 fnames = {'form'; 'breaks'; 'coefs'; 'pieces'; 'order'; 'dim'};
 if isstruct(pp)
-    tf = false;
     % TODO - consider checking all fields
     if sum( isfield(pp,fnames) ) == numel(fnames)
         if strcmp(pp.form,'pp')

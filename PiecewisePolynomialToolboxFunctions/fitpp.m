@@ -212,7 +212,7 @@ for i = 2:nX
             hWAITBAR = waitbar(0,'Fitting piecewise polynomial...');
         end
         
-        if tMINUTES > 0
+        if tMINUTES > 5
             showTIME = true;
             fprintf('Status update for "%s.m"\n',mfilename);
             fprintf('               Current time: %s\n',datestr(now));
@@ -221,18 +221,24 @@ for i = 2:nX
     end
     
     if showTIME
+        %{
+        % Show running dots
         if mod((i-1),4) == 0
             fprintf(char([8,8,8]));
         else
             fprintf('.');
         end
+        %}
     end
     
     if showWAITBAR
         % Status update
         if ~ishandle(hWAITBAR)
             pp = [];
+            %{
+            % Remove running dots
             fprintf( char(repmat(8,1,mod((i-1),4))) );
+            %}
             warning('Fitting cancelled by user.');
             return
         end
@@ -247,7 +253,10 @@ if showWAITBAR
     delete(hWAITBAR);
 end
 if showTIME
+    %{
+    % Remove running dots
     fprintf( char(repmat(8,1,mod((i-1),4))) );
+    %}
     fprintf('     Actual completion time: %s\n',datestr(now));
 end
 % -------------------------------------------------------------------------
