@@ -4,7 +4,7 @@ function PiecewisePolynomialToolboxUpdate
 %
 %   M. Kutzer 05Feb2018, USNA
 
-% TODO - Find a location for "TransformationToolbox Example SCRIPTS"
+% TODO - Find a location for "PiecewisePolynomialToolbox Example SCRIPTS"
 % TODO - update function for general operation
 
 ToolboxUpdate('PiecewisePolynomial');
