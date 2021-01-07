@@ -13,9 +13,9 @@ function varargout = PiecewisePolynomialToolboxVer
 %   M. Kutzer 05Feb2018, USNA
 
 A.Name = 'Piecewise Polynomial Toolbox';
-A.Version = '1.0.2';
+A.Version = '1.0.3';
 A.Release = '(R2017b)';
-A.Date = '03-Aug-2018';
+A.Date = '07-Jan-2021';
 A.URLVer = 1;
 
 msg{1} = sprintf('MATLAB %s Version: %s %s',A.Name, A.Version, A.Release);
