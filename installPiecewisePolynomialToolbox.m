@@ -15,6 +15,7 @@ function installPiecewisePolynomialToolbox(replaceExisting)
 
 % Updates
 %   28Aug2018 - Removed incorrect references to Transformation Toolbox.
+%   08Jan2021 - Corrected questdlg
 
 % TODO - Allow users to create a local version if admin rights are not
 % possible.
@@ -45,7 +46,7 @@ if isToolbox == 7
         choice = questdlg(sprintf(...
             ['MATLAB Root already contains the Piecewise Polynomial Toolbox.\n',...
             'Would you like to replace the existing toolbox?']),...
-            'Yes','No');
+            'Replace Existing Piecewise Polynomial Toolbox','Yes','No','Cancel','Yes');
     elseif replaceExisting
         choice = 'Yes';
     else
