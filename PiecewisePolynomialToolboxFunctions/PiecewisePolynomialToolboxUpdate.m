@@ -4,6 +4,9 @@ function PiecewisePolynomialToolboxUpdate
 %
 %   M. Kutzer 05Feb2018, USNA
 
+% Updates
+%   08Jan2021 - Updated ToolboxUpdate
+
 % TODO - Find a location for "PiecewisePolynomialToolbox Example SCRIPTS"
 % TODO - update function for general operation
 
@@ -65,11 +68,11 @@ alternativeInstallMsg = [...
     sprintf('\t(2) Change your "working directory" to the location of "install%sToolbox.m"\n',toolboxName),...
     sprintf('\t(3) Enter "install%sToolbox" (without quotes) into the command window\n',toolboxName),...
     sprintf('\t(4) Press Enter.')];
-
+        
 if ~confirm
     warning('InstallToolbox:FailedDownload','Failed to download updated version of %s Toolbox.',toolboxName);
     fprintf(2,'\n%s\n',alternativeInstallMsg);
-    
+	
     msgbox(alternativeInstallMsg, sprintf('Failed to download %s Toolbox',toolboxName),'warn');
     return
 end
