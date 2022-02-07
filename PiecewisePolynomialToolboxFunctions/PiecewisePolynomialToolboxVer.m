@@ -12,10 +12,14 @@ function varargout = PiecewisePolynomialToolboxVer
 %
 %   M. Kutzer 05Feb2018, USNA
 
+% Updates
+%   07Feb2022 - Removed redundant SOtoAxisAngle (exists in Transformation
+%               Toolbox)
+
 A.Name = 'Piecewise Polynomial Toolbox';
-A.Version = '1.0.3';
+A.Version = '1.0.4';
 A.Release = '(R2019b)';
-A.Date = '08-Jan-2021';
+A.Date = '07-Feb-2022';
 A.URLVer = 1;
 
 msg{1} = sprintf('MATLAB %s Version: %s %s',A.Name, A.Version, A.Release);
