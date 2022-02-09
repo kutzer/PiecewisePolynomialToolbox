@@ -5,19 +5,22 @@ function [fig,axs] = plotpp(pp,t,varargin)
 %
 %   fig = plotpp(pp,t,n)
 %
-%   fig = plotpp(pp,t,n,lims)
+%   fig = plotpp(pp,t,n,lims,indStr)
+%
+%   fig = plotpp(pp,t,n,lims,indStr)
 %
 %   [fig,axs] = plotpp(___)
 %
 %   Input(s)
-%       pp   - piecewise polynomial structure
-%       t    - array containing discrete points for evaluation
-%       n    - [OPTIONAL] number of derivatives to evaluate in subplots
-%       lims - [OPTIONAL] limits for polynomial (for display)
+%       pp     - piecewise polynomial structure
+%       t      - array containing discrete points for evaluation
+%       n      - [OPTIONAL] number of derivatives to evaluate in subplots
+%       lims   - [OPTIONAL] limits for polynomial (for display)
 %           lims.pp(i,:)   - ith dimension limits of function, [lower, upper]
 %           lims.dpp(i,:)  - ith dimension limits of first derivative, [lower, upper]
 %           lims.ddpp(i,:) - ith dimension limits of second derivative, [lower, upper]
 %           Etc.
+%       indStr - [OPTIONAL] string defining independent variable (default is 's') 
 %
 %   Output(s)
 %       fig - figure handle containing plots
@@ -30,6 +33,12 @@ function [fig,axs] = plotpp(pp,t,varargin)
 %   M. Kutzer, 08Feb2022, USNA
 
 %% Parse input(s)
+if nargin < 5
+    indStr = 's';
+else
+    indStr = varargin{3};
+end
+
 if nargin < 4
     lims = [];
 else
@@ -56,17 +65,15 @@ end
 t_b = pp.breaks;
 
 xtck = t_b;
-xtcklbl{1} = '$t_0$';
-for i = 2:(numel(t_b)-1)
-    xtcklbl{i} = sprintf('$t_{b_%d}$',i);
+for i = 0:numel(t_b)
+    xtcklbl{i+1} = sprintf('$%s_{%d}$',indStr,i);
 end
-xtcklbl{i+1} = '$t_f$';
 
 %% Define y-labels 
-ylbl{1} = '$f(t)$';
-ylbl{2} = '$\frac{df}{dt}(t)$';
+ylbl{1} = sprintf('$f(%s)$',indStr);
+ylbl{2} = sprintf('$\\frac{df}{d%s}(%s)$',indStr,indStr);
 for i = 2:n
-    ylbl{i+1} = sprintf('$\\frac{d^{%d}f}{dt^{%d}}(t)$',i,i);
+    ylbl{i+1} = sprintf('$\\frac{d^{%d}f}{d%s^{%d}}(%s)$',i,indStr,i,indStr);
 end
 
 ytck{1} = [];
@@ -145,8 +152,8 @@ for j = 1:numel(axs)
     axis(axs(j),'tight'); drawnow;
     xx0 = xlim(axs(j));
     yy0 = ylim(axs(j));
-    xx0 = (diff(xx0)/20)*[-1,1] + xx0;
+    xx0 = (diff(xx0)/100)*[-1,1] + xx0;
     yy0 = (diff(yy0)/20)*[-1,1] + yy0;
-    %xlim(axs(j),xx0);
+    xlim(axs(j),xx0);
     ylim(axs(j),yy0);
 end
