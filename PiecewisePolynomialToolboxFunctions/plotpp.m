@@ -15,7 +15,8 @@ function [fig,axs] = plotpp(pp,t,varargin)
 %       pp     - piecewise polynomial structure
 %       t      - array containing discrete points for evaluation
 %       n      - [OPTIONAL] number of derivatives to evaluate in subplots
-%       lims   - [OPTIONAL] limits for polynomial (for display)
+%       lims   - [OPTIONAL] limits for polynomial (for display). Define
+%                lims = [] to skip this option. 
 %           lims.pp(i,:)   - ith dimension limits of function, [lower, upper]
 %           lims.dpp(i,:)  - ith dimension limits of first derivative, [lower, upper]
 %           lims.ddpp(i,:) - ith dimension limits of second derivative, [lower, upper]
@@ -29,6 +30,16 @@ function [fig,axs] = plotpp(pp,t,varargin)
 %           axs(2) - 1st derivative
 %           axs(3) - 2nd derivative
 %           Etc.
+%
+% Example:
+%   %% Define points & independent variable for 1D piecewise fit
+%   x = [1,5,1,-8,2]; % Points
+%   s = 1:numel(x);   % Independent variable
+%   %% Fit piecewise polynomial (C^0 continuity
+%   pp = fitpp(s,x);
+%   %% Plot piecewise polynomial with 1st & 2nd derivatives
+%   ss = linspace(s(1),s(end),1000);
+%   fig0 = plotpp(pp,ss,2,[],'s');
 %
 %   M. Kutzer, 08Feb2022, USNA
 
