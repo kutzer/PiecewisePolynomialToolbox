@@ -1,15 +1,17 @@
-function [fig,axs] = plotpp(pp,t,varargin)
+function hndls_s = plotpp(pp,t,varargin)
 % PLOTPP plots an n-dimensional piecewise polynomial as a function of the
 % parameterization term.
-%   fig = plotpp(pp,t)
+%   hndls_s = plotpp(pp,t)
 %
-%   fig = plotpp(pp,t,n)
+%   hndls_s = plotpp(pp,t,n)
 %
-%   fig = plotpp(pp,t,n,lims,indStr)
+%   hndls_s = plotpp(pp,t,n,lims,indStr)
 %
-%   fig = plotpp(pp,t,n,lims,indStr)
+%   hndls_s = plotpp(pp,t,n,lims,indStr)
 %
-%   [fig,axs] = plotpp(___)
+%   hndls_s = plotpp(pp,t,n,lims,indStr,fcnStr)
+%
+%   [hndls_s,hndls_f] = plotpp(___)
 %
 %   Input(s)
 %       pp     - piecewise polynomial structure
@@ -22,6 +24,11 @@ function [fig,axs] = plotpp(pp,t,varargin)
 %           lims.ddpp(i,:) - ith dimension limits of second derivative, [lower, upper]
 %           Etc.
 %       indStr - [OPTIONAL] string defining independent variable (default is 's') 
+%       fcnStr - [OPTIONAL] string defining function variable (default is 'f')
+%
+%    fcnStr NOTE: For adding vector symbols or other latex '\*' symbols:
+%                 Use '\\\' instead of '\'
+%        EXAMPLE: fcnStr = '\vec{q}' should be fcnStr = '\\\vec{q}'
 %
 %   Output(s)
 %       fig - figure handle containing plots
@@ -35,15 +42,24 @@ function [fig,axs] = plotpp(pp,t,varargin)
 %   %% Define points & independent variable for 1D piecewise fit
 %   x = [1,5,1,-8,2]; % Points
 %   s = 1:numel(x);   % Independent variable
-%   %% Fit piecewise polynomial (C^0 continuity
+%   %% Fit piecewise polynomial (C^0 continuity)
 %   pp = fitpp(s,x);
 %   %% Plot piecewise polynomial with 1st & 2nd derivatives
 %   ss = linspace(s(1),s(end),1000);
-%   fig0 = plotpp(pp,ss,2,[],'s');
+%   fig0 = plotpp(pp,ss,2,[],'s','f');
 %
 %   M. Kutzer, 08Feb2022, USNA
 
+% Updates
+%   18Feb2022 - Added fcnStr
+
 %% Parse input(s)
+if nargin < 6
+    fcnStr = 'f';
+else
+    fcnStr = varargin{4};
+end
+
 if nargin < 5
     indStr = 's';
 else
@@ -62,7 +78,12 @@ else
     n = varargin{1};
 end
 
-% TODO - check inputs
+%% Check input(s)
+[tf,msg] = ispp(pp);
+if ~tf
+    error('Input variable "pp" must be a valid piecewise polynomial structured array\n\n%s',msg);
+end
+% TODO - check remaining inputs for proper type
 
 %% Evaluate function(s)
 di_pp = pp;
@@ -81,10 +102,10 @@ for i = 0:numel(t_b)
 end
 
 %% Define y-labels 
-ylbl{1} = sprintf('$f(%s)$',indStr);
-ylbl{2} = sprintf('$\\frac{df}{d%s}(%s)$',indStr,indStr);
+ylbl{1} = sprintf('$%s(%s)$',fcnStr,indStr);
+ylbl{2} = sprintf('$\\frac{d%s}{d%s}(%s)$',fcnStr,indStr,indStr);
 for i = 2:n
-    ylbl{i+1} = sprintf('$\\frac{d^{%d}f}{d%s^{%d}}(%s)$',i,indStr,i,indStr);
+    ylbl{i+1} = sprintf('$\\frac{d^{%d}%s}{d%s^{%d}}(%s)$',i,fcnStr,indStr,i,indStr);
 end
 
 ytck{1} = [];
@@ -94,10 +115,13 @@ for i = 1:n
     ytcklbl{i+1} = {'$0$'};
 end
 
+%% ------------------------------------------------------------------------
+%  ---- PLOT DEPENDENT VARIABLES vs INDEPENDENT VARIABLE ------------------
+%  ------------------------------------------------------------------------
 %% Create figure, axes, etc.
 % Create figure
 fig = figure('Color',[1 1 1],...
-    'Units','Inches','Position',[0.25,0.65,6.27,5.40]);
+    'Units','Inches','Position',[0.25,0.65,6.27,5.40],'Name','plotpp: Dependend vs Independent');
 
 for i = 1:(n+1)
     % Create axes
@@ -123,22 +147,31 @@ for i = 1:n
     fld{i+1} = sprintf('%spp',d);
 end
 
+% Initialize handle array
+plim = nan(n+1,size(di_q{i},1),2);
+size(plim)
+% Populate handle array
 if ~isempty(lims)
     for i = 1:(n+1)
         if isfield(lims,fld{i})
             lim = lims.(fld{i});
             for j = 1:size(lim,1)
+                % Adjust width so all lines are visuble
                 w = 2 - 0.3*j;
+                % Plot limits
                 plim(i,j,1) = plot(axs(i),[t(1),t(end)],[lim(j,1),lim(j,1)],[colors(j),'--'],'LineWidth',w);
                 plim(i,j,2) = plot(axs(i),[t(1),t(end)],[lim(j,2),lim(j,2)],[colors(j),'--'],'LineWidth',w);
+                % Make colors a shade lighter
                 c = get(plim(i,j,1),'Color');
                 c = c + 0.5*ones(1,3);
                 c(c>1) = 1;
+                % Update colors
                 set(plim(i,j,:),'color',c);
             end
         end
     end
 end
+size(plim)
 
 %% Plot polynomial(s)
 for i = 1:(n+1)
@@ -152,7 +185,6 @@ for i = 1:(n+1)
         end
     end
 end
-
 
 %% Adjust axis limits
 for j = 1:numel(axs)
@@ -168,3 +200,12 @@ for j = 1:numel(axs)
     xlim(axs(j),xx0);
     ylim(axs(j),yy0);
 end
+
+%% Package output
+hndls_s.Figure = fig;
+hndls_s.Axes = axs;
+hndls_s.Plots = plt;
+hndls_s.Limits = plim;
+%% ------------------------------------------------------------------------
+%  ---- PLOT DEPENDENT VARIABLES vs DEPENDENT VARIABLES -------------------
+%  ------------------------------------------------------------------------
