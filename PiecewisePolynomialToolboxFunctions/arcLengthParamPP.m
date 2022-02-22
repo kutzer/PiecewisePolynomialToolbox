@@ -9,9 +9,13 @@ function varargout = arcLengthParamPP(varargin)
 %   [pps,slim] = arcLengthParamPP(___) returns the arc length parametrized
 %   curve and the limits of arc length [0, s_max].
 %
-%   See also spline fitpp
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
 %
 %   M. Kutzer, 13Dec2017, USNA
+
+% Updates
+%   20Feb2022 - Added "See also"
 
 %% Check number of inputs
 narginchk(1,2);

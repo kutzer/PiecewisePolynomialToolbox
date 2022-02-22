@@ -13,23 +13,26 @@ function pp = ppArray2pp(ppArray)
 %         and, if breakpoints are not shared, creates a common set of
 %         shared breakpoints for the resultant function.
 %
-%   Example:
-%     %% Define points & independent variable for 1D piecewise fit
-%     x1 = rand(1,5);                   % 1D points
-%     s1 = linspace(0,1,size(x1,2));    % Independent variable
-%     %% Fit piecewise polynomial (cubic spline)
-%     ppArray(1) = spline(s1,x1);
-%     %% Define points & independent variable for 3D piecewise fit
-%     x2 = rand(3,4);                   % 3D points
-%     s2 = linspace(-1,2,size(x2,2));   % Independent variable
-%     %% Fit piecewise polynomial (C^0 continuous)
-%     ppArray(2) = fitpp(s2,x2);
-%     %% Combine piecewise polynomial array to a single piecewise polynomial
-%     pp = ppArray2pp(ppArray);
+% Example:
+%   %% Define points & independent variable for 1D piecewise fit
+%   x1 = rand(1,5);                   % 1D points
+%   s1 = linspace(0,1,size(x1,2));    % Independent variable
+%   %% Fit piecewise polynomial (cubic spline)
+%   ppArray(1) = spline(s1,x1);
+%   %% Define points & independent variable for 3D piecewise fit
+%   x2 = rand(3,4);                   % 3D points
+%   s2 = linspace(-1,2,size(x2,2));   % Independent variable
+%   %% Fit piecewise polynomial (C^0 continuous)
+%   ppArray(2) = fitpp(s2,x2);
+%   %% Combine piecewise polynomial array to a single piecewise polynomial
+%   pp = ppArray2pp(ppArray);
+%
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp 
 %
 %   M. Kutzer, 18Feb2022, USNA
 
-pp = [];
+debugON = false;
 
 %% Check input(s)
 narginchk(1,1);
@@ -131,7 +134,7 @@ c(:,order) = ones(order,1);
 for n = order:-1:1
     p(:,n) = zeros(order,1);
     p(1:n,n) = [(n-1):-1:0].';
-
+    
     if n > 1
         c(:,n-1) = c(:,n).*p(:,n);
     end
@@ -146,93 +149,90 @@ for i = 1:numel(coefs_c)
         for b = 2:numel(breaks_i{i})
             % Extract current polynomial coefficients
             C = coefs_c{i}{d}(b-1,:);
-
+            
             % Isolate breakpoints for current polynomial
             s0_i = breaks_i{i}(b-1); % Current initial breakpoint
             s1_i = breaks_i{i}(b);   % Current final breakpoint
             
-            % Check for overlaps with new breakpoints
-            bin0_i = s0_i == breaks;
-            bin1_i = s1_i == breaks;
-
-            % WE HAVE NOT ADDRESSED THE CASE WHERE A FUNCTION HAS BROADER
-            % BREAKPOINTS THAN THE COMBINE BREAKPOINTS! 
-            binTEST = s0_i <= breaks & s1_i >= breaks % <--- USE THIS DUMMY!
-
-            bin = s0_i == breaks | s1_i == breaks;
-
-            if nnz(bin) == 0
+            % Find function interval in new breakpoints
+            bin = s0_i <= breaks & s1_i >= breaks; % <--- USE THIS DUMMY!
+            
+            % Define number of "parts" the function needs to be broken into
+            nParts = nnz(bin)-1;
+            
+            if nParts < 0
                 % Breakpoint interval is not included in combine pp
-                fprintf('IGNORE\n')
-                fprintf('%d, %d [%.4f,%.4f]: %d\n',i,d,s0_i,s1_i,nnz(bin));
-                disp(bin)
-                continue
-            end
-
-            if nnz(bin) == 1
-                % Special case?!?!
-            end
-
-            % Differentiate overlap condition
-            idx = find(bin);
-            nParts = diff(idx);
-
-            if nParts == 1
-                fprintf('KEEP AS-IS\n')
-                fprintf('%d, %d [%.4f,%.4f]: %d\n',i,d,s0_i,s1_i,nnz(bin));
-                disp(bin)
-                % Append coefficients
-                coefs_n{i}{d}(end+1,:) = C;
-                continue
-            end
-
-            if nParts > 1
-                fprintf('SPLIT INTO %d parts\n',nParts)
-                fprintf('%d, %d [%.4f,%.4f]: %d\n',i,d,s0_i,s1_i,nnz(bin));
-                disp(bin)
-
-                % Define initialize condition for shared initial breakpoint
-                for b_n = (idx(1)+1):idx(2)
-                    s0_n = breaks(b_n-1); % Initial breakpoint
-                    s1_n = breaks(b_n);   % Final breakpoint
-
-                    % Update initial conditions for upcoming initial breakpoint
-                    % -> Preserve C^(order-1) continuity
-                    C0_n = C*vS(s0_n - s0_i);
-                    %C1_n = C*vS(s1_n - s0_i); % <--- Unused
-                    
-                    % Append coefficients
-                    C_n = C0_n;
-                    coefs_n{i}{d}(end+1,:) = C_n;
-
-                    % DEBUG
-                    % -> Evaulate existing coeffients
-                    f0_i = C*vS(s0_n - s0_i);
-                    f1_i = C*vS(s1_n - s0_i);
-                    % -> Evaulate new coefficients
-                    f0 = C_n*vS(s0_n - s0_n);
-                    f1 = C_n*vS(s1_n - s0_n);
-
-                    % DEBUG
-                    ff0_i = fliplr(f0_i);
-                    ff1_i = fliplr(f1_i);
-                    fprintf('s   = {%9.4f,%9.4f}, ',s0_n,s1_n);
-                    for k = 1:order
-                        strds = repmat('d',1,k-1);
-                        fprintf('%sf   = {%9.4f,%9.4f}, ',strds,ff0_i(k),ff1_i(k))
-                    end
-                    fprintf('\n');
-
-                    ff0 = fliplr(f0);
-                    ff1 = fliplr(f1);
-                    fprintf('s_%d = {%9.4f,%9.4f}, ',b_n-1,s0_n,s1_n);
-                    for k = 1:order
-                        strds = repmat('d',1,k-1);
-                        fprintf('%sf_%d = {%9.4f,%9.4f}, ',strds,b_n-1,ff0(k),ff1(k));
-                    end
-                    fprintf('\n');
+                if debugON
+                    fprintf('IGNORE: No breakpoin overlap\n')
+                    fprintf('%d, %d [%.4f,%.4f]: %d\n',i,d,s0_i,s1_i,nParts);
+                    fprintf('bin     = ['); fprintf('%d ',bin    ); fprintf(']\n');
                 end
-                fprintf('\n')
+                continue
+            end
+            
+            if nParts == 0
+                % Breakpoint interval is not included in combine pp
+                % -> One breakpoint is shared on an extreme
+                if debugON
+                    fprintf('IGNORE: Single breakpoint overlap\n')
+                    fprintf('i = %d, dim = %d, [%.4f,%.4f]: %d\n',i,d,s0_i,s1_i,nParts);
+                    fprintf('bin     = ['); fprintf('%d ',bin    ); fprintf(']\n');
+                end
+                continue
+            end
+            
+            if nParts >= 1
+                % Breakpoint interval spans multiple new breakpoints
+                % -> We are also applying if the breakpoints are unchanged.
+                %    This is more time consuming but simplifies the cases
+                %    we need to consider.
+                if debugON
+                    fprintf('SPLIT INTO %d parts\n',nParts)
+                    fprintf('i = %d, dim = %d, [%.4f,%.4f]: %d\n',i,d,s0_i,s1_i,nParts);
+                    fprintf('bin     = ['); fprintf('%d ',bin    ); fprintf(']\n');
+                end
+                
+                % Define initialize condition for shared initial breakpoint
+                idx(1) = find(bin,1,'first');
+                idx(2) = find(bin,1,'last');
+                for b_n = (idx(1)+1):idx(2)
+                    % Define new breakpoints
+                    s0_n = breaks(b_n-1); % New initial breakpoint
+                    s1_n = breaks(b_n);   % New final breakpoint
+                    
+                    % Update coefficients for new breakpoints
+                    C_n = C*vS(s1_n - s0_i) * (vS(s1_n - s0_n))^-1;
+                    coefs_n{i}{d}(end+1,:) = C_n;
+                    
+                    if debugON
+                        % DEBUG
+                        % -> Evaulate existing coeffients
+                        f0_i = C*vS(s0_n - s0_i);
+                        f1_i = C*vS(s1_n - s0_i);
+                        % -> Evaulate new coefficients
+                        f0 = C_n*vS(s0_n - s0_n);
+                        f1 = C_n*vS(s1_n - s0_n);
+                        
+                        % DEBUG
+                        ff0_i = fliplr(f0_i);
+                        ff1_i = fliplr(f1_i);
+                        fprintf('s   = {%9.4f,%9.4f}, ',s0_n,s1_n);
+                        for k = 1:order
+                            strds = repmat('d',1,k-1);
+                            fprintf('%sf   = {%9.4f,%9.4f}, ',strds,ff0_i(k),ff1_i(k))
+                        end
+                        fprintf('\n');
+                        
+                        ff0 = fliplr(f0);
+                        ff1 = fliplr(f1);
+                        fprintf('s_%d = {%9.4f,%9.4f}, ',b_n-1,s0_n,s1_n);
+                        for k = 1:order
+                            strds = repmat('d',1,k-1);
+                            fprintf('%sf_%d = {%9.4f,%9.4f}, ',strds,b_n-1,ff0(k),ff1(k));
+                        end
+                        fprintf('\n');
+                    end
+                end
             end
         end
     end

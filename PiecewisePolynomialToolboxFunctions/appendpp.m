@@ -8,9 +8,13 @@ function pp = appendpp(pp1,pp2,varargin)
 %   pp = APPENDPP(pp1,pp2,breakOffset) allows the user to specify the break
 %   offset used to combine the two sets of break points.
 %
-%   See also spline, ppval, mkpp, unmkpp
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
 %
 %   M. Kutzer, 15Oct2019, USNA
+
+% Updates
+%   20Feb2022 - Added "See also"
 
 %% Check number of input arguments
 narginchk(2,3);

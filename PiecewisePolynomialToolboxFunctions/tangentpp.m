@@ -12,7 +12,13 @@ function varargout = tangentpp(varargin)
 %   with the tangent and unit tangent of pp with a default of N spline 
 %   segments between break points when defining T_hat. 
 %
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp 
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
+%
 %   M. Kutzer, 17Jan2018, USNA
+
+% Updates
+%   20Feb2022 - Added "See also"
 
 %% Check number of input arguments
 narginchk(1,2);

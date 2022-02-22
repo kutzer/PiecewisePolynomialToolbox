@@ -3,11 +3,15 @@ function dpp = diffpp(pp)
 %   dpp = DIFFPP(pp) returns a piecewise polynomial associated with the
 %   derivative of pp.
 %
+%   See also spline ppval mkpp unmkpp fitpp intpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
+%
 %   M. Kutzer, 17Nov2017, USNA
 
 % Updates:
 %   09Feb2022 - If the order of the polynomial fit falls below 1, the
 %               coefficients of 0 are added to the first order term
+%   20Feb2022 - Added "See also"
 
 %% Check number of input arguments
 narginchk(1,1);

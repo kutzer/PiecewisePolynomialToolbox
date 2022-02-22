@@ -13,12 +13,14 @@ function [tf,msg] = ispp(pp)
 %             polynomial structured array and false otherwise
 %       msg - string argument describing array
 %
-%   See also fitpp intpp diffpp normalpp plotpp spline makepp unmkpp
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ppArray2pp
 %
 %   M. Kutzer, 22Nov2017, USNA
 
 % Updates
 %   18Feb2022 - improved code speed
+%   20Feb2022 - Added "See also"
 
 %% Check input(s)
 narginchk(1,1);

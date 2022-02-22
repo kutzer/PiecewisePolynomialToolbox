@@ -14,7 +14,13 @@ function ipp = intpp(pp,c,x)
 %   eliminate possible step discontinuities in the integral. The resultant
 %   function should be C0 continuous.
 %
+%   See also spline ppval mkpp unmkpp fitpp diffpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
+%
 %   M. Kutzer, 17Nov2017, USNA
+
+% Updates
+%   20Feb2022 - Added "See also"
 
 %% Check number of input arguments
 narginchk(1,3);

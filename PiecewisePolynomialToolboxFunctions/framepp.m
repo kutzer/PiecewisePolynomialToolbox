@@ -17,7 +17,13 @@ function F = framepp(varargin)
 %   unit tangent (see tangentpp.m) and M added break points when defining
 %   the unit normal (see normalpp.m).
 %
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp tangentpp
+%   normalpp arcLengthParamPP appendpp ispp ppArray2pp
+%
 %   M. Kutzer, 17Jan2018, USNA
+
+% Updates
+%   20Feb2022 - Added "See also"
 
 %% Check number of input arguments
 narginchk(1,3);

@@ -23,7 +23,13 @@ function varargout = normalpp(varargin)
 %   break points when defining N, and an additional m spline segments 
 %   between break points of N when defining N-hat.
 %
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp plotpp tangentpp
+%   framepp arcLengthParamPP appendpp ispp ppArray2pp
+%
 %   M. Kutzer, 17Jan2018, USNA
+
+% Updates
+%   20Feb2022 - Added "See also"
 
 %% Check number of input arguments
 narginchk(1,3);

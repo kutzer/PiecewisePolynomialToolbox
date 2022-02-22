@@ -48,10 +48,14 @@ function hndls_s = plotpp(pp,t,varargin)
 %   ss = linspace(s(1),s(end),1000);
 %   fig0 = plotpp(pp,ss,2,[],'s','f');
 %
+%   See also spline ppval mkpp unmkpp fitpp diffpp intpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
+%
 %   M. Kutzer, 08Feb2022, USNA
 
 % Updates
 %   18Feb2022 - Added fcnStr
+%   20Feb2022 - Added "See also"
 
 %% Parse input(s)
 if nargin < 6
@@ -83,7 +87,15 @@ end
 if ~tf
     error('Input variable "pp" must be a valid piecewise polynomial structured array\n\n%s',msg);
 end
-% TODO - check remaining inputs for proper type
+
+switch msg
+    case 'pp'
+        % Do nothing
+    case 'ppArray'
+        pp = ppArray2pp(pp);
+    otherwise
+        error('Unexpected "ispp" message.');
+end
 
 %% Evaluate function(s)
 di_pp = pp;
@@ -206,6 +218,12 @@ hndls_s.Figure = fig;
 hndls_s.Axes = axs;
 hndls_s.Plots = plt;
 hndls_s.Limits = plim;
+
+if nargout <= 1
+    return
+end
+
 %% ------------------------------------------------------------------------
 %  ---- PLOT DEPENDENT VARIABLES vs DEPENDENT VARIABLES -------------------
 %  ------------------------------------------------------------------------
+

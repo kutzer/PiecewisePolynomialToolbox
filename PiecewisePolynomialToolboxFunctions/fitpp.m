@@ -39,7 +39,8 @@ function pp = fitpp(x,y,varargin)
 %                     | CN - Ensures CN continutiy
 %   ---------------------------------------------------------------
 %
-%   See also spline, ppval, mkpp, unmkpp, diffpp, intpp
+%   See also spline ppval mkpp unmkpp diffpp intpp plotpp tangentpp
+%   normalpp framepp arcLengthParamPP appendpp ispp ppArray2pp
 %
 %   M. Kutzer, 17Nov2017, USNA
 
@@ -47,6 +48,7 @@ function pp = fitpp(x,y,varargin)
 %   02Feb2018 - Updated to correct for evolution of curve from 0 to arc
 %               length
 %   03Aug2018 - Updated to provide status updates for long processing
+%   20Feb2022 - Added "See also"
 
 % TODO - Implement continuity constraints. 
 
