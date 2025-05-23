@@ -22,7 +22,7 @@ function installPiecewisePolynomialToolbox(replaceExisting,skipAdmin)
 dirName = 'piecewisepolynomial';
 toolboxContent  = 'PiecewisePolynomialToolboxFunctions';
 toolboxExamples = 'PiecewisePolynomialToolbox Test SCRIPTS';
-toolboxName = 'PiecewisePolynomial Toolbox';
+toolboxName = 'Piecewise Polynomial Toolbox';
 toolboxShort = strrep(toolboxName, ' ', '');
 
 %% Define toolbox directory options
