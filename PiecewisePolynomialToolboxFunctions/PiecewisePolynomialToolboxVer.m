@@ -18,11 +18,12 @@ function varargout = PiecewisePolynomialToolboxVer
 %   09Feb2022 - Updated diffpp to preserve at least 1st order polynomials
 %               and added plotpp
 %   20Feb2022 - Added ppArray2pp and updated documentation
+%   22May2025 - Updated for local user install
 
 A.Name = 'Piecewise Polynomial Toolbox';
-A.Version = '1.0.6';
+A.Version = '1.0.7';
 A.Release = '(R2019b)';
-A.Date = '22-Feb-2022';
+A.Date = '23-May-2025';
 A.URLVer = 1;
 
 msg{1} = sprintf('MATLAB %s Version: %s %s',A.Name, A.Version, A.Release);
